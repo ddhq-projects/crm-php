@@ -69,7 +69,7 @@ final class PluginManager
             $slug = $manifest['slug'] ?? null;
 
             if (!is_string($slug) || !preg_match('/^[a-z0-9-]+$/', $slug)) {
-                throw new RuntimeException('Некорректный slug плагина: ' . $file);
+                throw new RuntimeException('Invalid plugin slug: ' . $file);
             }
 
             $manifest['path'] = dirname($file);
@@ -94,7 +94,7 @@ final class PluginManager
 
         $manifest = $this->plugins[$slug] ?? null;
         if ($manifest === null) {
-            throw new RuntimeException('Плагин не найден.');
+            throw new RuntimeException('Plugin not found.');
         }
 
         require_once $manifest['path'] . '/' . $manifest['class_file'];
@@ -102,7 +102,7 @@ final class PluginManager
         $plugin = new $class();
 
         if (!$plugin instanceof PluginInterface) {
-            throw new RuntimeException('Плагин должен реализовывать PluginInterface.');
+            throw new RuntimeException('Plugin must implement PluginInterface.');
         }
 
         return $this->instances[$slug] = $plugin;

@@ -22,7 +22,7 @@ final class ClientController extends Controller
         $search = trim((string) ($_GET['search'] ?? ''));
 
         return $this->app->render('clients/index', [
-            'title' => 'Клиенты',
+            'title' => 'Clients',
             'clients' => $this->clients->all($search),
             'search' => $search,
         ]);
@@ -31,7 +31,7 @@ final class ClientController extends Controller
     public function create(): string
     {
         return $this->app->render('clients/form', [
-            'title' => 'Новый клиент',
+            'title' => 'New client',
             'client' => null,
             'action' => '/clients',
         ]);
@@ -41,7 +41,7 @@ final class ClientController extends Controller
     {
         $client = $this->clients->create($this->validated());
         $this->app->hooks->dispatch('client.created', $client);
-        flash('success', 'Клиент добавлен.');
+        flash('success', 'Client created.');
         redirect('/clients/' . $client['id']);
     }
 
@@ -68,7 +68,7 @@ final class ClientController extends Controller
         }
 
         return $this->app->render('clients/form', [
-            'title' => 'Редактировать клиента',
+            'title' => 'Edit client',
             'client' => $client,
             'action' => '/clients/' . $id . '/update',
         ]);
@@ -78,13 +78,13 @@ final class ClientController extends Controller
     {
         $client = $this->clients->find((int) $id);
         if ($client === null) {
-            flash('error', 'Клиент не найден.');
+            flash('error', 'Client not found.');
             redirect('/clients');
         }
 
         $updated = $this->clients->update((int) $id, $this->validated());
         $this->app->hooks->dispatch('client.updated', $updated, $client);
-        flash('success', 'Клиент обновлён.');
+        flash('success', 'Client updated.');
         redirect('/clients/' . $id);
     }
 
@@ -94,7 +94,7 @@ final class ClientController extends Controller
         if ($client !== null) {
             $this->clients->delete((int) $id);
             $this->app->hooks->dispatch('client.deleted', $client);
-            flash('success', 'Клиент и связанные сделки удалены.');
+            flash('success', 'Client and its deals deleted.');
         }
 
         redirect('/clients');
@@ -111,12 +111,12 @@ final class ClientController extends Controller
         ];
 
         if ($data['name'] === '') {
-            flash('error', 'Укажите имя клиента.');
+            flash('error', 'Enter the client name.');
             redirect('/clients' . (isset($_POST['id']) ? '/' . (int) $_POST['id'] . '/edit' : '/create'));
         }
 
         if ($data['email'] !== '' && filter_var($data['email'], FILTER_VALIDATE_EMAIL) === false) {
-            flash('error', 'Проверьте адрес электронной почты.');
+            flash('error', 'Check the email address.');
             redirect('/clients' . (isset($_POST['id']) ? '/' . (int) $_POST['id'] . '/edit' : '/create'));
         }
 

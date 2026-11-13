@@ -16,6 +16,6 @@ abstract class Controller
     {
         http_response_code(404);
 
-        return $this->app->render('errors/404', ['title' => 'Не найдено']);
+        return $this->app->render('errors/404', ['title' => 'Not found']);
     }
 }

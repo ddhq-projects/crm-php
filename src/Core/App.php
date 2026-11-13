@@ -24,10 +24,10 @@ final class App
     public function render(string $template, array $data = []): string
     {
         $navigation = $this->hooks->applyFilters('admin.navigation', [
-            ['url' => '/', 'label' => 'Обзор'],
-            ['url' => '/clients', 'label' => 'Клиенты'],
-            ['url' => '/deals', 'label' => 'Сделки'],
-            ['url' => '/plugins', 'label' => 'Плагины'],
+            ['url' => '/', 'label' => 'Dashboard'],
+            ['url' => '/clients', 'label' => 'Clients'],
+            ['url' => '/deals', 'label' => 'Deals'],
+            ['url' => '/plugins', 'label' => 'Plugins'],
         ]);
 
         $flash = $_SESSION['flash'] ?? null;

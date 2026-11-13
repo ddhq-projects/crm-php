@@ -15,7 +15,7 @@ final class DashboardController extends Controller
         $deals = new DealRepository($this->app->db);
 
         return $this->app->render('dashboard', [
-            'title' => 'Обзор',
+            'title' => 'Dashboard',
             'clientCount' => (int) $this->app->db->pdo->query('SELECT COUNT(*) FROM clients')->fetchColumn(),
             'dealStats' => $deals->stats(),
             'pipeline' => $deals->pipeline(),
