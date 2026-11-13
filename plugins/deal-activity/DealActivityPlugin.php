@@ -16,18 +16,26 @@ final class DealActivityPlugin implements PluginInterface
             $this->log($app, 'client.created', 'client', (int) $client['id'], 'Added client "' . $client['name'] . '"');
         });
 
-        $app->hooks->listen('deal.created', function (array $deal) use ($app): void {
-            $this->log($app, 'deal.created', 'deal', (int) $deal['id'], 'Created deal "' . $deal['title'] . '" for ' . money($deal['amount']));
+        $app->hooks->listen('contact.created', function (array $contact) use ($app): void {
+            $this->log($app, 'contact.created', 'contact', (int) $contact['id'], 'Added contact "' . $contact['name'] . '"');
         });
 
-        $app->hooks->listen('deal.stage_changed', function (array $deal, string $from, string $to) use ($app): void {
-            $stages = \Crm\Repositories\DealRepository::STAGES;
-            $message = 'Deal "' . $deal['title'] . '": ' . $stages[$from] . ' → ' . $stages[$to];
-            $this->log($app, 'deal.stage_changed', 'deal', (int) $deal['id'], $message);
+        $app->hooks->listen('user.created', function (array $user) use ($app): void {
+            $this->log($app, 'user.created', 'user', (int) $user['id'], 'Added user "' . $user['name'] . '"');
+        });
+
+        $app->hooks->listen('case.created', function (array $case) use ($app): void {
+            $this->log($app, 'case.created', 'case', (int) $case['id'], 'Created ' . $case['kind'] . ' "' . $case['title'] . '"');
+        });
+
+        $app->hooks->listen('case.status_changed', function (array $case, string $from, string $to) use ($app): void {
+            $statuses = \Crm\Repositories\CaseRepository::STATUSES;
+            $message = 'Case "' . $case['title'] . '": ' . $statuses[$from] . ' → ' . $statuses[$to];
+            $this->log($app, 'case.status_changed', 'case', (int) $case['id'], $message);
         }, 20);
 
-        $app->hooks->listen('deal.deleted', function (array $deal) use ($app): void {
-            $this->log($app, 'deal.deleted', 'deal', (int) $deal['id'], 'Deleted deal "' . $deal['title'] . '"');
+        $app->hooks->listen('case.deleted', function (array $case) use ($app): void {
+            $this->log($app, 'case.deleted', 'case', (int) $case['id'], 'Deleted case "' . $case['title'] . '"');
         });
 
         $app->hooks->addFilter('admin.navigation', function (array $navigation): array {

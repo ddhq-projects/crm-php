@@ -1,14 +1,26 @@
 # CRM PHP
 
-A small CRM built on plain PHP and SQLite: clients, a deal pipeline and extensions through plugins. Closer in spirit to Bitrix24, amoCRM and Salesforce, but without a heavy framework or external dependencies.
+A small, universal case-management CRM built on plain PHP and SQLite. Cases can represent leads, issues or tasks; users, clients and contacts are separate entities connected to cases.
+
+## Core model
+
+- [x] Universal cases: issue, lead or task types, statuses, priorities, assignees, due dates and optional value;
+- [x] Users: administrators, regular users and client users, with active/inactive state;
+- [x] Clients and contacts: clients can be linked to a case, and several contacts can be linked to each case.
+
+A user with the `client` role is an application identity. A client or contact is a CRM record and does not need a user account.
 
 ## Features
 
-- clients: contacts, company, notes, search, create, edit and delete;
-- deals: amount, client, expected close date, notes and six pipeline stages;
-- dashboard: active and won amounts, the pipeline and recent deals;
+- cases: type, status, priority, optional client and assignee, multiple contacts, due date, value and description;
+- clients: company details, notes, search, related cases and contacts;
+- contacts: client membership, job title, communication details and case links;
+- users: roles, unique email addresses, activity state and assigned-case counts;
+- dashboard: open and unassigned cases, case flow and recent updates;
 - plugins: manifest, activation and deactivation, events, actions, filters, priorities, routes and custom views;
 - CSRF protection for forms, prepared SQL statements and escaped output.
+
+Existing deals are migrated to lead cases automatically. Won deals become resolved, lost deals become closed, and other active stages become new or in-progress cases. Old `/deals` page links redirect to `/cases`.
 
 ## Requirements
 
@@ -38,7 +50,7 @@ CRM_DATABASE=/full/path/crm.sqlite php -S 127.0.0.1:8080 -t public
 
 Add `CRM_DEBUG=true` to show error messages during development.
 
-> The base version has no authentication. Run it locally, or add authentication before exposing it to a network.
+> The base version has no authentication or authorization. User roles currently describe records and case ownership; they do not restrict access. Run it locally, or add authentication before exposing it to a network.
 
 ## Structure
 
@@ -46,8 +58,8 @@ Add `CRM_DEBUG=true` to show error messages during development.
 public/               Front controller and CSS
 routes/web.php        Core routes
 src/Core/             HTTP, SQLite, views, hooks and the plugin manager
-src/Controllers/      CRM controllers
-src/Repositories/     Client and deal data access
+src/Controllers/      Case, client, contact, user and plugin controllers
+src/Repositories/     Entity data access
 views/                Interface templates
 plugins/              Installable plugins
 database/schema.sql   SQLite schema
@@ -56,10 +68,10 @@ storage/              Local database
 
 ## Activity Log plugin
 
-The `deal-activity` plugin is enabled by default. It:
+The `deal-activity` plugin is enabled by default. Its directory and storage table names are kept for compatibility. It:
 
 - creates its own table in `activate()`;
-- listens to `client.created`, `deal.created`, `deal.stage_changed` and `deal.deleted`;
+- listens to client, contact, user and case events;
 - adds a widget through the `dashboard.widgets` filter;
 - adds a menu item through the `admin.navigation` filter;
 - registers an `/activity` page with its own template;
@@ -91,7 +103,7 @@ final class Plugin implements PluginInterface
 {
     public function register(App $app): void
     {
-        $app->hooks->listen('deal.created', function (array $deal): void {
+        $app->hooks->listen('case.created', function (array $case): void {
             // React to the event.
         }, priority: 20);
 
@@ -111,8 +123,8 @@ final class Plugin implements PluginInterface
 ### Events and actions
 
 ```php
-$app->hooks->listen('deal.created', $listener, 10);
-$app->hooks->dispatch('deal.created', $deal);
+$app->hooks->listen('case.created', $listener, 10);
+$app->hooks->dispatch('case.created', $case);
 
 $app->hooks->addAction('custom.action', $callback, 10);
 $app->hooks->doAction('custom.action', $argument);
@@ -123,8 +135,10 @@ A lower priority runs earlier; listeners with the same priority keep their regis
 Core events:
 
 - `client.created(client)`, `client.updated(client, oldClient)`, `client.deleted(client)`;
-- `deal.created(deal)`, `deal.updated(deal, oldDeal)`, `deal.deleted(deal)`;
-- `deal.stage_changed(deal, oldStage, newStage)`.
+- `contact.created(contact)`, `contact.updated(contact, oldContact)`, `contact.deleted(contact)`;
+- `user.created(user)`, `user.updated(user, oldUser)`, `user.deleted(user)`;
+- `case.created(case)`, `case.updated(case, oldCase)`, `case.deleted(case)`;
+- `case.status_changed(case, oldStatus, newStatus)`.
 
 ### Filters
 

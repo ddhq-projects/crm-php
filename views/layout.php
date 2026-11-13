@@ -11,7 +11,7 @@
     <aside class="sidebar">
         <a class="brand" href="/">
             <span class="brand-mark">C</span>
-            <span>CRM PHP<small>clients and deals</small></span>
+            <span>CRM PHP<small>cases, clients and teams</small></span>
         </a>
         <nav class="navigation" aria-label="Main navigation">
             <?php foreach ($navigation as $item): ?>

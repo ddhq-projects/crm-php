@@ -32,5 +32,39 @@ final class Database
         }
 
         $this->pdo->exec($schema);
+        $this->migrateLegacyDeals();
+    }
+
+    private function migrateLegacyDeals(): void
+    {
+        $table = $this->pdo->query(
+            "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'deals'"
+        )->fetchColumn();
+        if ($table === false) {
+            return;
+        }
+
+        $this->pdo->beginTransaction();
+        try {
+            $this->pdo->exec(
+                "INSERT INTO cases (
+                    client_id, title, kind, status, priority, due_date, amount, description, created_at, updated_at
+                )
+                SELECT client_id, title, 'lead',
+                    CASE stage
+                        WHEN 'won' THEN 'resolved'
+                        WHEN 'lost' THEN 'closed'
+                        WHEN 'new' THEN 'new'
+                        ELSE 'in_progress'
+                    END,
+                    'normal', expected_close_date, amount, notes, created_at, updated_at
+                FROM deals"
+            );
+            $this->pdo->exec('DROP TABLE deals');
+            $this->pdo->commit();
+        } catch (\Throwable $exception) {
+            $this->pdo->rollBack();
+            throw $exception;
+        }
     }
 }

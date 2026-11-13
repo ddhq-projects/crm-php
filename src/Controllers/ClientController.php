@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Crm\Controllers;
 
 use Crm\Repositories\ClientRepository;
-use Crm\Repositories\DealRepository;
+use Crm\Repositories\CaseRepository;
+use Crm\Repositories\ContactRepository;
 
 final class ClientController extends Controller
 {
@@ -55,8 +56,9 @@ final class ClientController extends Controller
         return $this->app->render('clients/show', [
             'title' => $client['name'],
             'client' => $client,
-            'deals' => (new DealRepository($this->app->db))->byClient((int) $id),
-            'stages' => DealRepository::STAGES,
+            'cases' => (new CaseRepository($this->app->db))->byClient((int) $id),
+            'statuses' => CaseRepository::STATUSES,
+            'contacts' => (new ContactRepository($this->app->db))->byClient((int) $id),
         ]);
     }
 
@@ -94,7 +96,7 @@ final class ClientController extends Controller
         if ($client !== null) {
             $this->clients->delete((int) $id);
             $this->app->hooks->dispatch('client.deleted', $client);
-            flash('success', 'Client and its deals deleted.');
+            flash('success', 'Client deleted. Its cases and contacts were kept.');
         }
 
         redirect('/clients');

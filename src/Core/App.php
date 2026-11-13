@@ -25,8 +25,10 @@ final class App
     {
         $navigation = $this->hooks->applyFilters('admin.navigation', [
             ['url' => '/', 'label' => 'Dashboard'],
+            ['url' => '/cases', 'label' => 'Cases'],
             ['url' => '/clients', 'label' => 'Clients'],
-            ['url' => '/deals', 'label' => 'Deals'],
+            ['url' => '/contacts', 'label' => 'Contacts'],
+            ['url' => '/users', 'label' => 'Users'],
             ['url' => '/plugins', 'label' => 'Plugins'],
         ]);
 

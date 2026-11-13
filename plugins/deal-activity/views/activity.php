@@ -1,7 +1,7 @@
 <div class="page-actions"><p class="muted">The 200 most recent events recorded by the Activity Log plugin.</p><a class="button button-secondary" href="/plugins">Configure plugin</a></div>
 <section class="panel">
     <?php if ($activities === []): ?>
-        <div class="empty"><p>No events yet. Add a client or create a deal.</p><a class="button" href="/clients/create">Add client</a></div>
+        <div class="empty"><p>No events yet. Add a record or create a case.</p><a class="button" href="/cases/create">Add case</a></div>
     <?php else: ?>
         <div class="table-wrap"><table>
             <thead><tr><th>Event</th><th>Description</th><th>Entity</th><th>Date</th></tr></thead>

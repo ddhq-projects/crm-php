@@ -14,10 +14,10 @@ final class ClientRepository
 
     public function all(string $search = ''): array
     {
-        $sql = "SELECT clients.*, COUNT(deals.id) AS deals_count,
-                COALESCE(SUM(CASE WHEN deals.stage NOT IN ('won', 'lost') THEN deals.amount END), 0) AS open_amount
+        $sql = "SELECT clients.*, COUNT(cases.id) AS cases_count,
+                COALESCE(SUM(CASE WHEN cases.status NOT IN ('resolved', 'closed') THEN cases.amount END), 0) AS open_amount
                 FROM clients
-                LEFT JOIN deals ON deals.client_id = clients.id";
+                LEFT JOIN cases ON cases.client_id = clients.id";
         $parameters = [];
 
         if ($search !== '') {
