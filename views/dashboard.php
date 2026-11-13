@@ -34,7 +34,7 @@
             <div class="table-wrap"><table>
                 <thead><tr><th>Case</th><th>Client</th><th>Assignee</th><th>Status</th></tr></thead>
                 <tbody><?php foreach ($recentCases as $case): ?><tr>
-                    <td><a class="table-title" href="/cases/<?= e($case['id']) ?>/edit">#<?= e($case['id']) ?> <?= e($case['title']) ?></a><small><?= e(\Crm\Repositories\CaseRepository::TYPES[$case['kind']]) ?></small></td>
+                    <td><a class="table-title" href="/cases/<?= e($case['id']) ?>">#<?= e($case['id']) ?> <?= e($case['title']) ?></a><small><?= e(\Crm\Repositories\CaseRepository::TYPES[$case['kind']]) ?></small></td>
                     <td><?= e($case['client_name'] ?: '—') ?></td>
                     <td><?= e($case['assignee_name'] ?: 'Unassigned') ?></td>
                     <td><span class="badge status-<?= e($case['status']) ?>"><?= e(\Crm\Repositories\CaseRepository::STATUSES[$case['status']]) ?></span></td>

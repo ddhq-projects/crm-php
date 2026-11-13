@@ -56,6 +56,19 @@ final class ContactRepository
         return $statement->fetchAll();
     }
 
+    public function byCase(int $caseId): array
+    {
+        $statement = $this->db->pdo->prepare(
+            'SELECT contacts.*, clients.name AS client_name FROM contacts
+             JOIN case_contacts ON case_contacts.contact_id = contacts.id
+             LEFT JOIN clients ON clients.id = contacts.client_id
+             WHERE case_contacts.case_id = ? ORDER BY contacts.name, contacts.id'
+        );
+        $statement->execute([$caseId]);
+
+        return $statement->fetchAll();
+    }
+
     public function create(array $data): array
     {
         $now = date('Y-m-d H:i:s');

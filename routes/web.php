@@ -21,6 +21,7 @@ $app->router->get('/', [$dashboard, 'index']);
 $app->router->get('/cases', [$cases, 'index']);
 $app->router->get('/cases/create', [$cases, 'create']);
 $app->router->post('/cases', [$cases, 'store']);
+$app->router->get('/cases/{id}', [$cases, 'show']);
 $app->router->get('/cases/{id}/edit', [$cases, 'edit']);
 $app->router->post('/cases/{id}/update', [$cases, 'update']);
 $app->router->post('/cases/{id}/status', [$cases, 'updateStatus']);
@@ -50,6 +51,7 @@ $app->router->post('/users/{id}/delete', [$users, 'delete']);
 
 $app->router->get('/deals', fn (): never => redirect('/cases'));
 $app->router->get('/deals/create', fn (): never => redirect('/cases/create'));
+$app->router->get('/deals/{id}', fn (string $id): never => redirect('/cases/' . $id));
 $app->router->get('/deals/{id}/edit', fn (string $id): never => redirect('/cases/' . $id . '/edit'));
 
 $app->router->get('/plugins', [$plugins, 'index']);

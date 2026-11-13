@@ -10,8 +10,8 @@ use PDO;
 final class CaseRepository
 {
     public const TYPES = [
-        'issue' => 'Issue',
         'lead' => 'Lead',
+        'issue' => 'Issue',
         'task' => 'Task',
     ];
 

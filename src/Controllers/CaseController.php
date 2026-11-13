@@ -62,7 +62,24 @@ final class CaseController extends Controller
         $case = $this->cases->create($this->validated());
         $this->app->hooks->dispatch('case.created', $case);
         flash('success', 'Case created.');
-        redirect('/cases');
+        redirect('/cases/' . $case['id']);
+    }
+
+    public function show(string $id): string
+    {
+        $case = $this->cases->find((int) $id);
+        if ($case === null) {
+            return $this->notFound();
+        }
+
+        return $this->app->render('cases/show', [
+            'title' => '#' . $case['id'] . ' ' . $case['title'],
+            'case' => $case,
+            'contacts' => $this->contacts->byCase((int) $id),
+            'type' => CaseRepository::TYPES[$case['kind']],
+            'status' => CaseRepository::STATUSES[$case['status']],
+            'priority' => CaseRepository::PRIORITIES[$case['priority']],
+        ]);
     }
 
     public function edit(string $id): string
@@ -98,7 +115,7 @@ final class CaseController extends Controller
         $updated = $this->cases->update((int) $id, $this->validated());
         $this->dispatchUpdateEvents($case, $updated);
         flash('success', 'Case updated.');
-        redirect('/cases');
+        redirect('/cases/' . $id);
     }
 
     public function updateStatus(string $id): never
@@ -149,7 +166,7 @@ final class CaseController extends Controller
             'client_id' => (int) ($_POST['client_id'] ?? 0) ?: null,
             'assignee_id' => (int) ($_POST['assignee_id'] ?? 0) ?: null,
             'title' => trim((string) ($_POST['title'] ?? '')),
-            'kind' => (string) ($_POST['kind'] ?? 'issue'),
+            'kind' => (string) ($_POST['kind'] ?? 'lead'),
             'status' => (string) ($_POST['status'] ?? 'new'),
             'priority' => (string) ($_POST['priority'] ?? 'normal'),
             'due_date' => trim((string) ($_POST['due_date'] ?? '')),

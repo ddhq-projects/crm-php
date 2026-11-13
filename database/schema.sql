@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS cases (
     client_id INTEGER,
     assignee_id INTEGER,
     title TEXT NOT NULL,
-    kind TEXT NOT NULL DEFAULT 'issue',
+    kind TEXT NOT NULL DEFAULT 'lead',
     status TEXT NOT NULL DEFAULT 'new',
     priority TEXT NOT NULL DEFAULT 'normal',
     due_date TEXT,

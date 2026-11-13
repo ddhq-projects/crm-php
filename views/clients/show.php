@@ -19,7 +19,7 @@
     <section class="panel">
         <div class="panel-heading"><h2>Client cases</h2><span class="muted"><?= count($cases) ?></span></div>
         <?php if ($cases === []): ?><p class="muted">This client has no cases yet.</p><?php else: ?>
-            <ul class="deal-list"><?php foreach ($cases as $case): ?><li><div><a class="table-title" href="/cases/<?= e($case['id']) ?>/edit">#<?= e($case['id']) ?> <?= e($case['title']) ?></a><small><?= e($statuses[$case['status']]) ?> · <?= e($case['assignee_name'] ?: 'Unassigned') ?></small></div><a href="/cases/<?= e($case['id']) ?>/edit">→</a></li><?php endforeach; ?></ul>
+            <ul class="deal-list"><?php foreach ($cases as $case): ?><li><div><a class="table-title" href="/cases/<?= e($case['id']) ?>">#<?= e($case['id']) ?> <?= e($case['title']) ?></a><small><?= e($statuses[$case['status']]) ?> · <?= e($case['assignee_name'] ?: 'Unassigned') ?></small></div><a href="/cases/<?= e($case['id']) ?>/edit">→</a></li><?php endforeach; ?></ul>
         <?php endif; ?>
     </section>
     <section class="panel">

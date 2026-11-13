@@ -1,6 +1,6 @@
 # CRM PHP
 
-A small, universal case-management CRM built on plain PHP and SQLite. Cases can represent leads, issues or tasks; users, clients and contacts are separate entities connected to cases.
+A small, universal case-management CRM built on plain PHP and SQLite. The case is the central CRM node: leads, issues and tasks are case types, while users, clients and contacts are entities connected to that node.
 
 ## Core model
 
@@ -12,7 +12,7 @@ A user with the `client` role is an application identity. A client or contact is
 
 ## Features
 
-- cases: type, status, priority, optional client and assignee, multiple contacts, due date, value and description;
+- cases: a central detail page, lead-by-default type, status, priority, optional client and assignee, multiple contacts, due date, value and description;
 - clients: company details, notes, search, related cases and contacts;
 - contacts: client membership, job title, communication details and case links;
 - users: roles, unique email addresses, activity state and assigned-case counts;

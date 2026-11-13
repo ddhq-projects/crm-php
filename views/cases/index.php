@@ -21,7 +21,7 @@
         <div class="table-wrap"><table>
             <thead><tr><th>Case</th><th>Client and contacts</th><th>Assignee</th><th>Priority</th><th>Due date</th><th>Status</th><th></th></tr></thead>
             <tbody><?php foreach ($cases as $case): ?><tr>
-                <td><a class="table-title" href="/cases/<?= e($case['id']) ?>/edit">#<?= e($case['id']) ?> <?= e($case['title']) ?></a><small><?= e($types[$case['kind']]) ?><?= $case['amount'] > 0 ? ' · ' . money($case['amount']) : '' ?></small></td>
+                <td><a class="table-title" href="/cases/<?= e($case['id']) ?>">#<?= e($case['id']) ?> <?= e($case['title']) ?></a><small><?= e($types[$case['kind']]) ?><?= $case['amount'] > 0 ? ' · ' . money($case['amount']) : '' ?></small></td>
                 <td><?php if ($case['client_id']): ?><a href="/clients/<?= e($case['client_id']) ?>"><?= e($case['client_name']) ?></a><?php else: ?>—<?php endif; ?><small><?= e($case['contact_names'] ?: 'No linked contacts') ?></small></td>
                 <td><?= e($case['assignee_name'] ?: 'Unassigned') ?></td>
                 <td><span class="badge priority-<?= e($case['priority']) ?>"><?= e(\Crm\Repositories\CaseRepository::PRIORITIES[$case['priority']]) ?></span></td>
