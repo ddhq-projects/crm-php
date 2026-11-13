@@ -10,12 +10,12 @@ use PDO;
 final class DealRepository
 {
     public const STAGES = [
-        'new' => 'Новая',
-        'qualified' => 'Квалификация',
-        'proposal' => 'Предложение',
-        'negotiation' => 'Переговоры',
-        'won' => 'Выиграна',
-        'lost' => 'Проиграна',
+        'new' => 'New',
+        'qualified' => 'Qualified',
+        'proposal' => 'Proposal',
+        'negotiation' => 'Negotiation',
+        'won' => 'Won',
+        'lost' => 'Lost',
     ];
 
     public function __construct(private readonly Database $db)

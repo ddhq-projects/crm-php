@@ -9,7 +9,7 @@ final class PluginController extends Controller
     public function index(): string
     {
         return $this->app->render('plugins/index', [
-            'title' => 'Плагины',
+            'title' => 'Plugins',
             'plugins' => $this->app->plugins->all(),
         ]);
     }
@@ -22,15 +22,15 @@ final class PluginController extends Controller
         try {
             if ($action === 'enable') {
                 $this->app->plugins->enable($slug);
-                flash('success', 'Плагин включён. Его хуки будут активны со следующего запроса.');
+                flash('success', 'Plugin enabled. Its hooks are active from the next request.');
             } elseif ($action === 'disable') {
                 $this->app->plugins->disable($slug);
-                flash('success', 'Плагин выключен.');
+                flash('success', 'Plugin disabled.');
             } else {
-                flash('error', 'Неизвестное действие.');
+                flash('error', 'Unknown action.');
             }
         } catch (\Throwable) {
-            flash('error', 'Не удалось изменить состояние плагина.');
+            flash('error', 'Could not change the plugin state.');
         }
 
         redirect('/plugins');

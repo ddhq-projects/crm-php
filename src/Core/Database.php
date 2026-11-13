@@ -17,7 +17,7 @@ final class Database
         $directory = dirname($path);
 
         if (!is_dir($directory) && !mkdir($directory, 0775, true) && !is_dir($directory)) {
-            throw new RuntimeException('Не удалось создать каталог базы данных.');
+            throw new RuntimeException('Could not create the database directory.');
         }
 
         $this->pdo = new PDO('sqlite:' . $path);
@@ -28,7 +28,7 @@ final class Database
 
         $schema = file_get_contents($basePath . '/database/schema.sql');
         if ($schema === false) {
-            throw new RuntimeException('Схема базы данных не найдена.');
+            throw new RuntimeException('Database schema not found.');
         }
 
         $this->pdo->exec($schema);

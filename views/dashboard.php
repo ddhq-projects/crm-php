@@ -1,20 +1,20 @@
 <div class="page-actions">
-    <p class="muted">Главные показатели и текущая воронка продаж.</p>
+    <p class="muted">Key metrics and the current sales pipeline.</p>
     <div class="actions">
-        <a class="button button-secondary" href="/clients/create">Добавить клиента</a>
-        <a class="button" href="/deals/create">Новая сделка</a>
+        <a class="button button-secondary" href="/clients/create">Add client</a>
+        <a class="button" href="/deals/create">New deal</a>
     </div>
 </div>
 
-<section class="stats" aria-label="Показатели">
-    <article class="stat-card"><span>Клиенты</span><strong><?= e($clientCount) ?></strong><a href="/clients">Все клиенты →</a></article>
-    <article class="stat-card"><span>Всего сделок</span><strong><?= e($dealStats['total']) ?></strong><a href="/deals">Открыть воронку →</a></article>
-    <article class="stat-card"><span>В работе</span><strong><?= money($dealStats['open_amount']) ?></strong><small>Сумма активных сделок</small></article>
-    <article class="stat-card"><span>Выиграно</span><strong><?= money($dealStats['won_amount']) ?></strong><small>Общая сумма успеха</small></article>
+<section class="stats" aria-label="Metrics">
+    <article class="stat-card"><span>Clients</span><strong><?= e($clientCount) ?></strong><a href="/clients">All clients →</a></article>
+    <article class="stat-card"><span>Total deals</span><strong><?= e($dealStats['total']) ?></strong><a href="/deals">Open pipeline →</a></article>
+    <article class="stat-card"><span>In progress</span><strong><?= money($dealStats['open_amount']) ?></strong><small>Value of active deals</small></article>
+    <article class="stat-card"><span>Won</span><strong><?= money($dealStats['won_amount']) ?></strong><small>Total closed-won value</small></article>
 </section>
 
 <section class="panel">
-    <div class="panel-heading"><h2>Воронка продаж</h2><span class="muted">Количество / сумма</span></div>
+    <div class="panel-heading"><h2>Sales pipeline</h2><span class="muted">Count / value</span></div>
     <div class="pipeline">
         <?php foreach ($pipeline as $key => $stage): ?>
             <a class="pipeline-stage stage-<?= e($key) ?>" href="/deals?stage=<?= e($key) ?>">
@@ -28,12 +28,12 @@
 
 <div class="dashboard-grid">
     <section class="panel">
-        <div class="panel-heading"><h2>Недавние сделки</h2><a href="/deals">Все сделки</a></div>
+        <div class="panel-heading"><h2>Recent deals</h2><a href="/deals">All deals</a></div>
         <?php if ($recentDeals === []): ?>
-            <div class="empty"><p>Сделок пока нет.</p><a class="button" href="/deals/create">Создать первую сделку</a></div>
+            <div class="empty"><p>No deals yet.</p><a class="button" href="/deals/create">Create the first deal</a></div>
         <?php else: ?>
             <div class="table-wrap"><table>
-                <thead><tr><th>Сделка</th><th>Клиент</th><th>Сумма</th><th>Этап</th></tr></thead>
+                <thead><tr><th>Deal</th><th>Client</th><th>Amount</th><th>Stage</th></tr></thead>
                 <tbody><?php foreach ($recentDeals as $deal): ?><tr>
                     <td><a class="table-title" href="/deals/<?= e($deal['id']) ?>/edit"><?= e($deal['title']) ?></a></td>
                     <td><?= e($deal['client_name']) ?></td>
@@ -46,12 +46,12 @@
 
     <?php foreach ($widgets as $widget): ?>
         <section class="panel">
-            <div class="panel-heading"><h2><?= e($widget['title']) ?></h2><?php if (!empty($widget['url'])): ?><a href="<?= e($widget['url']) ?>">Подробнее</a><?php endif; ?></div>
+            <div class="panel-heading"><h2><?= e($widget['title']) ?></h2><?php if (!empty($widget['url'])): ?><a href="<?= e($widget['url']) ?>">View all</a><?php endif; ?></div>
             <?php if (empty($widget['items'])): ?>
-                <p class="muted">События появятся после создания клиентов и сделок.</p>
+                <p class="muted">Events appear after clients and deals are created.</p>
             <?php else: ?>
                 <ul class="activity-list">
-                    <?php foreach ($widget['items'] as $item): ?><li><span><?= e($item['message']) ?></span><time><?= e(date('d.m H:i', strtotime($item['created_at']))) ?></time></li><?php endforeach; ?>
+                    <?php foreach ($widget['items'] as $item): ?><li><span><?= e($item['message']) ?></span><time><?= e(date('M j, g:i A', strtotime($item['created_at']))) ?></time></li><?php endforeach; ?>
                 </ul>
             <?php endif; ?>
         </section>

@@ -18,7 +18,7 @@ final class View
             ? $template
             : $this->basePath . '/views/' . $template . '.php';
         if (!is_file($file)) {
-            throw new RuntimeException('Шаблон не найден: ' . $template);
+            throw new RuntimeException('View not found: ' . $template);
         }
 
         extract($data, EXTR_SKIP);

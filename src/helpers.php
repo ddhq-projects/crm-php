@@ -11,7 +11,7 @@ function e(mixed $value): string
 
 function money(float|int|string $amount): string
 {
-    return number_format((float) $amount, 2, '.', ' ') . ' ₽';
+    return '$' . number_format((float) $amount, 2, '.', ',');
 }
 
 function redirect(string $path): never

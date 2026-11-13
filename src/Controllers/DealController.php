@@ -24,7 +24,7 @@ final class DealController extends Controller
         $stage = (string) ($_GET['stage'] ?? '');
 
         return $this->app->render('deals/index', [
-            'title' => 'Сделки',
+            'title' => 'Deals',
             'deals' => $this->deals->all($stage),
             'stages' => DealRepository::STAGES,
             'activeStage' => $stage,
@@ -34,7 +34,7 @@ final class DealController extends Controller
     public function create(): string
     {
         return $this->app->render('deals/form', [
-            'title' => 'Новая сделка',
+            'title' => 'New deal',
             'deal' => null,
             'clients' => $this->clients->all(),
             'stages' => DealRepository::STAGES,
@@ -47,7 +47,7 @@ final class DealController extends Controller
     {
         $deal = $this->deals->create($this->validated());
         $this->app->hooks->dispatch('deal.created', $deal);
-        flash('success', 'Сделка создана.');
+        flash('success', 'Deal created.');
         redirect('/deals');
     }
 
@@ -59,7 +59,7 @@ final class DealController extends Controller
         }
 
         return $this->app->render('deals/form', [
-            'title' => 'Редактировать сделку',
+            'title' => 'Edit deal',
             'deal' => $deal,
             'clients' => $this->clients->all(),
             'stages' => DealRepository::STAGES,
@@ -72,13 +72,13 @@ final class DealController extends Controller
     {
         $deal = $this->deals->find((int) $id);
         if ($deal === null) {
-            flash('error', 'Сделка не найдена.');
+            flash('error', 'Deal not found.');
             redirect('/deals');
         }
 
         $updated = $this->deals->update((int) $id, $this->validated());
         $this->dispatchUpdateEvents($deal, $updated);
-        flash('success', 'Сделка обновлена.');
+        flash('success', 'Deal updated.');
         redirect('/deals');
     }
 
@@ -88,13 +88,13 @@ final class DealController extends Controller
         $stage = (string) ($_POST['stage'] ?? '');
 
         if ($deal === null || !isset(DealRepository::STAGES[$stage])) {
-            flash('error', 'Не удалось изменить этап сделки.');
+            flash('error', 'Could not change the deal stage.');
             redirect('/deals');
         }
 
         $updated = $this->deals->updateStage((int) $id, $stage);
         $this->dispatchUpdateEvents($deal, $updated);
-        flash('success', 'Этап сделки изменён.');
+        flash('success', 'Deal stage changed.');
         redirect('/deals');
     }
 
@@ -104,7 +104,7 @@ final class DealController extends Controller
         if ($deal !== null) {
             $this->deals->delete((int) $id);
             $this->app->hooks->dispatch('deal.deleted', $deal);
-            flash('success', 'Сделка удалена.');
+            flash('success', 'Deal deleted.');
         }
 
         redirect('/deals');
@@ -138,7 +138,7 @@ final class DealController extends Controller
         if ($data['title'] === '' || $this->clients->find($data['client_id']) === null
             || !is_numeric($amountInput) || $data['amount'] < 0
             || !isset(DealRepository::STAGES[$data['stage']]) || !$validDate) {
-            flash('error', 'Проверьте клиента, название, сумму, этап и дату сделки.');
+            flash('error', 'Check the client, title, amount, stage and close date.');
             redirect('/deals/create');
         }
 

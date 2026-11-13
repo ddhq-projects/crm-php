@@ -13,32 +13,32 @@ final class DealActivityPlugin implements PluginInterface
     public function register(App $app): void
     {
         $app->hooks->listen('client.created', function (array $client) use ($app): void {
-            $this->log($app, 'client.created', 'client', (int) $client['id'], 'Добавлен клиент «' . $client['name'] . '»');
+            $this->log($app, 'client.created', 'client', (int) $client['id'], 'Added client "' . $client['name'] . '"');
         });
 
         $app->hooks->listen('deal.created', function (array $deal) use ($app): void {
-            $this->log($app, 'deal.created', 'deal', (int) $deal['id'], 'Создана сделка «' . $deal['title'] . '» на ' . money($deal['amount']));
+            $this->log($app, 'deal.created', 'deal', (int) $deal['id'], 'Created deal "' . $deal['title'] . '" for ' . money($deal['amount']));
         });
 
         $app->hooks->listen('deal.stage_changed', function (array $deal, string $from, string $to) use ($app): void {
             $stages = \Crm\Repositories\DealRepository::STAGES;
-            $message = 'Сделка «' . $deal['title'] . '»: ' . $stages[$from] . ' → ' . $stages[$to];
+            $message = 'Deal "' . $deal['title'] . '": ' . $stages[$from] . ' → ' . $stages[$to];
             $this->log($app, 'deal.stage_changed', 'deal', (int) $deal['id'], $message);
         }, 20);
 
         $app->hooks->listen('deal.deleted', function (array $deal) use ($app): void {
-            $this->log($app, 'deal.deleted', 'deal', (int) $deal['id'], 'Удалена сделка «' . $deal['title'] . '»');
+            $this->log($app, 'deal.deleted', 'deal', (int) $deal['id'], 'Deleted deal "' . $deal['title'] . '"');
         });
 
         $app->hooks->addFilter('admin.navigation', function (array $navigation): array {
-            $navigation[] = ['url' => '/activity', 'label' => 'Активность'];
+            $navigation[] = ['url' => '/activity', 'label' => 'Activity'];
 
             return $navigation;
         });
 
         $app->hooks->addFilter('dashboard.widgets', function (array $widgets) use ($app): array {
             $widgets[] = [
-                'title' => 'Последняя активность',
+                'title' => 'Recent activity',
                 'url' => '/activity',
                 'items' => $app->db->pdo->query(
                     'SELECT message, created_at FROM deal_activity ORDER BY id DESC LIMIT 5'
@@ -70,7 +70,7 @@ final class DealActivityPlugin implements PluginInterface
 
     public function deactivate(App $app): void
     {
-        // Данные журнала сохраняются и будут доступны после повторного включения.
+        // Log data is kept and becomes available again when the plugin is re-enabled.
     }
 
     private function log(App $app, string $event, string $entityType, int $entityId, string $message): void
@@ -88,7 +88,7 @@ final class DealActivityPlugin implements PluginInterface
         $statement->execute();
 
         return $app->render(__DIR__ . '/views/activity.php', [
-            'title' => 'Активность',
+            'title' => 'Activity',
             'activities' => $statement->fetchAll(),
         ]);
     }
