@@ -1,80 +1,95 @@
 # CRM PHP
 
-Небольшая CRM на PHP и SQLite: учёт клиентов, воронка сделок и расширения через плагины. По идее ближе к Bitrix24, amoCRM и Salesforce, но без тяжёлого фреймворка и внешних зависимостей.
+A small CRM built on plain PHP and SQLite: clients, a deal pipeline and extensions through plugins. Closer in spirit to Bitrix24, amoCRM and Salesforce, but without a heavy framework or external dependencies.
 
-## Возможности
+## Features
 
-- клиенты: контакты, компания, заметки, поиск, создание, редактирование и удаление;
-- сделки: сумма, клиент, планируемая дата закрытия, заметки и шесть этапов воронки;
-- панель показателей: активные и выигранные суммы, воронка и последние сделки;
-- плагины: манифест, активация и деактивация, события, действия, фильтры, приоритеты, маршруты и собственные шаблоны;
-- CSRF-защита форм, подготовленные SQL-запросы и экранирование вывода.
+- clients: contacts, company, notes, search, create, edit and delete;
+- deals: amount, client, expected close date, notes and six pipeline stages;
+- dashboard: active and won amounts, the pipeline and recent deals;
+- plugins: manifest, activation and deactivation, events, actions, filters, priorities, routes and custom views;
+- CSRF protection for forms, prepared SQL statements and escaped output.
 
-## Запуск
+## Requirements
 
-Требуется PHP 8.1+ с расширениями `pdo_sqlite` и `sqlite3`. Composer и Node.js не нужны.
+PHP 8.1+ with the `pdo_sqlite` and `sqlite3` extensions. Composer and Node.js are not required.
+
+## Running locally with lerd
+
+The app is served from `public/`, and the committed `.lerd.yaml` declares that document root, so lerd needs no extra configuration.
+
+```bash
+cd includes/crm-php
+lerd link crm-php
+```
+
+Open [http://crm-php.localhost](http://crm-php.localhost). The database `storage/crm.sqlite` and its tables are created automatically on the first request.
+
+## Running without lerd
+
+Any PHP-capable web server works as long as its document root is `public/`. With the PHP built-in server:
 
 ```bash
 php -S 127.0.0.1:8080 -t public
 ```
 
-Откройте [http://127.0.0.1:8080](http://127.0.0.1:8080). База `storage/crm.sqlite` и таблицы создаются автоматически при первом запуске.
+Open [http://127.0.0.1:8080](http://127.0.0.1:8080).
 
-Для другого файла базы:
+To use another database file:
 
 ```bash
-CRM_DATABASE=/полный/путь/crm.sqlite php -S 127.0.0.1:8080 -t public
+CRM_DATABASE=/full/path/crm.sqlite php -S 127.0.0.1:8080 -t public
 ```
 
-Для отображения текста ошибок в разработке добавьте `CRM_DEBUG=true`.
+Add `CRM_DEBUG=true` to show error messages during development.
 
-> В базовой версии нет авторизации. Запускайте её локально или добавьте аутентификацию перед публикацией в сети.
+> The base version has no authentication. Run it locally, or add authentication before exposing it to a network.
 
-## Структура
+## Structure
 
 ```text
-public/               Точка входа и CSS
-routes/web.php        Маршруты ядра
-src/Core/             HTTP, SQLite, шаблоны, хуки и менеджер плагинов
-src/Controllers/      Контроллеры CRM
-src/Repositories/     Работа с клиентами и сделками
-views/                Шаблоны интерфейса
-plugins/              Устанавливаемые плагины
-database/schema.sql   Схема SQLite
-storage/              Локальная база данных
+public/               Front controller and CSS
+routes/web.php        Core routes
+src/Core/             HTTP, SQLite, views, hooks and the plugin manager
+src/Controllers/      CRM controllers
+src/Repositories/     Client and deal data access
+views/                Interface templates
+plugins/              Installable plugins
+database/schema.sql   SQLite schema
+storage/              Local database
 ```
 
-## Плагин «Журнал активности»
+## Activity Log plugin
 
-Плагин `deal-activity` включён по умолчанию. Он:
+The `deal-activity` plugin is enabled by default. It:
 
-- создаёт собственную таблицу в `activate()`;
-- слушает `client.created`, `deal.created`, `deal.stage_changed` и `deal.deleted`;
-- добавляет виджет через фильтр `dashboard.widgets`;
-- добавляет пункт меню через фильтр `admin.navigation`;
-- регистрирует страницу `/activity` с собственным шаблоном;
-- не удаляет данные при выключении.
+- creates its own table in `activate()`;
+- listens to `client.created`, `deal.created`, `deal.stage_changed` and `deal.deleted`;
+- adds a widget through the `dashboard.widgets` filter;
+- adds a menu item through the `admin.navigation` filter;
+- registers an `/activity` page with its own template;
+- keeps its data when the plugin is disabled.
 
-Управление находится в разделе **Плагины**. Отключение убирает обработчики, маршрут и виджет со следующего запроса.
+Manage it in the **Plugins** section. Disabling it removes the handlers, the route and the widget from the next request on.
 
-## API расширений
+## Extension API
 
-Плагин находится в отдельном каталоге `plugins/my-plugin` и содержит `plugin.php`:
+A plugin lives in its own directory, `plugins/my-plugin`, and contains `plugin.php`:
 
 ```php
 return [
     'slug' => 'my-plugin',
-    'name' => 'Мой плагин',
+    'name' => 'My plugin',
     'version' => '1.0.0',
-    'description' => 'Описание расширения.',
-    'author' => 'Ваше имя',
+    'description' => 'What the extension does.',
+    'author' => 'Your name',
     'class' => MyPlugin\Plugin::class,
     'class_file' => 'Plugin.php',
     'default_enabled' => false,
 ];
 ```
 
-Класс реализует `Crm\Core\PluginInterface`:
+The class implements `Crm\Core\PluginInterface`:
 
 ```php
 final class Plugin implements PluginInterface
@@ -82,11 +97,11 @@ final class Plugin implements PluginInterface
     public function register(App $app): void
     {
         $app->hooks->listen('deal.created', function (array $deal): void {
-            // Реакция на событие.
+            // React to the event.
         }, priority: 20);
 
         $app->hooks->addFilter('admin.navigation', function (array $items): array {
-            $items[] = ['url' => '/my-plugin', 'label' => 'Мой плагин'];
+            $items[] = ['url' => '/my-plugin', 'label' => 'My plugin'];
             return $items;
         });
     }
@@ -96,9 +111,9 @@ final class Plugin implements PluginInterface
 }
 ```
 
-`register()` вызывается при каждом запросе только у включённых плагинов. `activate()` вызывается при включении, `deactivate()` — при выключении. Плагины — доверенный PHP-код и выполняются с правами приложения.
+`register()` runs on every request for enabled plugins only. `activate()` runs when the plugin is enabled, `deactivate()` when it is disabled. Plugins are trusted PHP code and run with the application's privileges.
 
-### События и действия
+### Events and actions
 
 ```php
 $app->hooks->listen('deal.created', $listener, 10);
@@ -108,23 +123,23 @@ $app->hooks->addAction('custom.action', $callback, 10);
 $app->hooks->doAction('custom.action', $argument);
 ```
 
-Меньший приоритет выполняется раньше; при одинаковом приоритете сохраняется порядок регистрации.
+A lower priority runs earlier; listeners with the same priority keep their registration order.
 
-События ядра:
+Core events:
 
 - `client.created(client)`, `client.updated(client, oldClient)`, `client.deleted(client)`;
 - `deal.created(deal)`, `deal.updated(deal, oldDeal)`, `deal.deleted(deal)`;
 - `deal.stage_changed(deal, oldStage, newStage)`.
 
-### Фильтры
+### Filters
 
-Фильтр получает текущее значение и возвращает изменённое:
+A filter receives the current value and returns the changed one:
 
 ```php
 $app->hooks->addFilter('dashboard.widgets', function (array $widgets): array {
-    $widgets[] = ['title' => 'Мой виджет', 'url' => null, 'items' => []];
+    $widgets[] = ['title' => 'My widget', 'url' => null, 'items' => []];
     return $widgets;
 });
 ```
 
-Доступны `admin.navigation` и `dashboard.widgets`. Маршрут добавляется через `$app->router->get()` или `post()`, шаблон плагина выводится через `$app->render(__DIR__ . '/views/page.php', $data)`.
+`admin.navigation` and `dashboard.widgets` are available. Add a route with `$app->router->get()` or `post()`, and render a plugin template with `$app->render(__DIR__ . '/views/page.php', $data)`.

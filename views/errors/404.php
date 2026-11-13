@@ -1,1 +1,1 @@
-<section class="panel empty"><h2>Здесь ничего нет</h2><p class="muted">Запись или страница не найдена.</p><a class="button" href="/">Вернуться на обзор</a></section>
+<section class="panel empty"><h2>Nothing here</h2><p class="muted">The record or page was not found.</p><a class="button" href="/">Back to dashboard</a></section>
