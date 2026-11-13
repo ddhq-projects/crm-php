@@ -16,10 +16,10 @@ PHP 8.1+ with the `pdo_sqlite` and `sqlite3` extensions. Composer and Node.js ar
 
 ## Running locally with lerd
 
-The app is served from `public/`, and the committed `.lerd.yaml` declares that document root, so lerd needs no extra configuration.
+The app is a plain PHP project served from `public/`, which lerd detects as the document root on link.
 
 ```bash
-cd includes/crm-php
+# from the project root
 lerd link crm-php
 ```
 

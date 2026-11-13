@@ -36,7 +36,7 @@ try {
 } catch (Throwable $exception) {
     http_response_code(500);
     $message = getenv('CRM_DEBUG') === 'true' ? $exception->getMessage() : 'Check the server logs.';
-    error_log($exception);
+    error_log((string) $exception);
 
     if (isset($app)) {
         echo $app->render('errors/500', ['title' => 'Error', 'message' => $message]);
