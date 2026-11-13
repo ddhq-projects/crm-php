@@ -16,14 +16,9 @@ PHP 8.1+ with the `pdo_sqlite` and `sqlite3` extensions. Composer and Node.js ar
 
 ## Running locally with lerd
 
-The app is a plain PHP project served from `public/`, which lerd detects as the document root on link.
+The project is linked as the lerd site `crm-php`, uses PHP 8.3 and is served from `public/`.
 
-```bash
-# from the project root
-lerd link crm-php
-```
-
-Open [http://crm-php.localhost](http://crm-php.localhost). The database `storage/crm.sqlite` and its tables are created automatically on the first request.
+Open [http://php-crm.localhost](http://php-crm.localhost). The database `storage/crm.sqlite` and its tables are created automatically on the first request.
 
 ## Running without lerd
 
