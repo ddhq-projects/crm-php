@@ -2,13 +2,17 @@
 
 A small, universal case-management CRM built on plain PHP and SQLite. The case is the central CRM node: leads, issues and tasks are case types, while users, clients and contacts are entities connected to that node.
 
-## Core model
 
-- [x] Universal cases: issue, lead or task types, statuses, priorities, assignees, due dates and optional value;
-- [x] Users: administrators, regular users and client users, with active/inactive state;
-- [x] Clients and contacts: clients can be linked to a case, and several contacts can be linked to each case.
+
+- [ ] rewrite to filament php [https://filamentphp.com/docs/5.x/introduction/installation](https://filamentphp.com/docs/5.x/introduction/installation)
+  - [ ] and install [https://filamentphp.com/docs/5.x/introduction/ai](https://filamentphp.com/docs/5.x/introduction/ai)
 
 A user with the `client` role is an application identity. A client or contact is a CRM record and does not need a user account.
+
+## Links
+
+- local [http://php-crm.localhost/](http://php-crm.localhost/)
+- git [https://github.com/ddhq-projects/crm-php](https://github.com/ddhq-projects/crm-php)
 
 ## Features
 
